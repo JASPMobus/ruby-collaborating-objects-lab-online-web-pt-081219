@@ -1,38 +1,30 @@
 class Song
-  attr_accessor :name, :artist, :artist_name
-  
+  attr_accessor :name, :artist
   @@all = []
-  
+
   def initialize(name)
     @name = name
-    
-    @@all << self 
-  end 
-  
-  def artist=(artist)
-    artist.songs << self
-    @artist = artist
-  end 
-  
+    save
+  end
+
+  def save
+    @@all << self
+  end
+
   def artist_name=(artist_name)
-    artist = Artist.find_or_create_by_name(artist_name)
-    @artist = artist
-    @artist_name = artist_name
+    self.artist = Artist.find_or_create_by_name(artist_name)
   end
-  
-  def self.new_by_filename(filename)
-    info = filename.split(" - ")
-    
-    artist = Artist.new(info[0])
-    name = info[1]
-    
-    new_song = Song.new(name)
-    new_song.artist = artist
-    
-    @@all.push(new_song)
-  end
-  
-  def self.all 
+
+  def self.all
     @@all
+  end
+
+  def self.new_by_filename(filename)
+    # artist - title - genre.mp3
+    artist = filename.split(" - ")[0]
+    track = filename.split(" - ")[1]
+    song = Song.new(track)
+    song.artist_name = artist
+    song
   end
 end
