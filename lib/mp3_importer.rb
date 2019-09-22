@@ -1,19 +1,21 @@
+# frozen_string_literal: true
+
 class MP3Importer
-  attr_accessor :path, :files
-  
+  attr_reader :path
+
   def initialize(path)
     @path = path
-    
-    self.files
   end
-  
+
   def files
-    @files = Dir.entries(path).filter { |file| file.include?(".mp3") }
-  end 
-  
+    files = []
+    Dir.new(path).each do |file|
+      files << file if file.end_with?('.mp3')
+    end
+    files
+  end
+
   def import
-    @files.each do |file|
-      Song.new_by_filename(file)
-    end 
+    self.files.each { |file| Song.new_by_filename(file) }
   end
 end
